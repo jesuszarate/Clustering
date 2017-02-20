@@ -5,4 +5,4 @@ class Cluster:
         self.next  = next
 
     def __str__(self):
-        return str(self.cargo)
+        return str(self.x) + " , " + str(self.y);
