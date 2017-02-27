@@ -4,7 +4,6 @@ class Cluster:
         self.id = float(id)
         self.x = float(x)
         self.y = float(y)
-        #self.dist = math.sqrt(x**2 + y**2)
         self.next  = next
 
     def __str__(self):

@@ -1,14 +1,8 @@
 import math
 import queue as Q
-import Cluster as node
+import MinCluster as node
+import point as p
 
-# q = Q.PriorityQueue()
-# q.put(node.Cluster(2,1,None))
-# q.put(node.Cluster(1,1,None))
-# #q.put(1)
-# #q.put(5)
-# while not q.empty():
-#     print q.get(),
 
 #read Files
 def Init2DClusters(path):
@@ -16,45 +10,46 @@ def Init2DClusters(path):
     with open(path, 'r') as f:
         for line in f:
             l = line.split()
-            n = node.Cluster(l[0], l[1], l[2], None)
-            cluster_list.append(n)
-
+            n = p.point(l[0], l[1], l[2])
+            cluster = node.Cluster()
+            cluster.add(n)
+            cluster_list.append(cluster)
     return cluster_list
 
-clusters = Init2DClusters("/Users/jesuszarate/SchoolSemesters/Spring2017/CS6140-DataMining/Clustering/Resources/C1.txt")
+clusters = Init2DClusters("/Users/jesuszarate/SchoolSemesters/Spring2017/CS6140-DataMining/Clustering/Resources/Ce.txt")
 
-k = 7
-q = Q.PriorityQueue()
+k = 2
+# q = Q.PriorityQueue()
 
 def distance(x1, x2, y1, y2):
-    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+    return math.sqrt((float(x2) - float(x1))**2 + (float(y2) - float(y1))**2)
 
-def getDistances(queue, clusters):
-    for i in range(len(clusters)):
-        curClust = clusters[i]
-        for j in range(i, len(clusters)):
-            clust = clusters[j]
-            dist = distance(curClust.x, clust.x, curClust.y, clust.y)
-            queue.put([dist, curClust, clust])
-    return queue
+def findMinDistance(cluster1, cluster2):
+    c1Points = cluster1.points
+    c2Points = cluster2.points
+    m = distance(c1Points[0].x, c2Points[0].x, c1Points[0].y, c2Points[0].y)
+    for c1 in c1Points:
+        for c2 in c2Points:
+            m = distance(c1.x, c2.x, c1.y, c2.y)
+    return m
 
-# while len(clusters) > k:
-#     getDistances(q, clusters)
+def getDistances():
+    q = Q.PriorityQueue()
+    for c1 in clusters:
+        for c2 in clusters:
+            q.put([findMinDistance(c1 , c2), c1, c2])
+    return q
 
-#getDistances(q, clusters)
-c1 = clusters[0]
-c2 = clusters[2]
+def merge(cluster1, cluster2):
+    cluster1.addAll(cluster2.points)
 
-dist = distance(c1.x, c2.x, c1.y, c2.y)
-q.put([dist, c1, c2])
+q = getDistances()
+while len(clusters) > k:
+    #Get the smallest distance and merge the clusters
+    closest = q.get()
+    merge(closest[1], closest[2])
+    clusters.remove(closest[2])
 
-c1 = clusters[0]
-c2 = clusters[1]
-dist = distance(c1.x, c2.x, c1.y, c2.y)
-q.put([dist, c1, c2])
+print clusters
 
-while not q.empty():
-    print q.get(),
-
-#Initialize the clusters
 
