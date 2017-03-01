@@ -106,7 +106,20 @@ def showClusterPlot():
     pyplot.show()
 
 
-# def get3MeanCost():
-#
-#
-# get3MeanCost()
+def get3MeanCost():
+    dict = {}
+    counts = {}
+    for c in C:
+        dict[c] = 0
+        counts[c] = 0
+    for i in range(0, n):
+        #print distance(centers[j], points[j])
+        #print str(centers[j]) + " " + str(points[j])
+        dict[centers[i].id] += distance(centers[i], points[i])
+        counts[centers[i].id] += 1
+
+    for id, val in dict.items():
+        print id + " : " + str(math.sqrt((val**2)/(counts[id])))
+    print dict
+
+get3MeanCost()
